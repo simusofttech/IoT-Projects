@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Radar Using Arduino UNO</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #1e293b;
+            background: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 55px 20px;
+            text-align: center;
+            color: white;
+            background: linear-gradient(135deg, #0284c7, #075985);
+        }
+
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 40px;
+        }
+
+        header p {
+            max-width: 750px;
+            margin: auto;
+            color: #e0f2fe;
+            font-size: 17px;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 160px;
+            height: auto;
+            display: block;
+            padding: 8px;
+            object-fit: contain;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+
+            padding: 15px;
+            background: white;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #075985;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #0284c7;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 28px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.08);
+            animation: fadeUp 0.8s ease;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            color: #075985;
+            border-bottom: 2px solid #e0f2fe;
+        }
+
+        .section h3 {
+            margin-top: 25px;
+            color: #0369a1;
+        }
+
+        .project-info {
+            padding: 18px;
+            background: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            border-radius: 8px;
+        }
+
+        .project-info p {
+            margin: 7px 0;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .requirement-card {
+            padding: 16px;
+            text-align: center;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .requirement-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 22px rgba(2, 132, 199, 0.18);
+        }
+
+        .requirement-card span {
+            width: 100%;
+            height: 170px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            margin-bottom: 14px;
+            padding: 10px;
+            overflow: hidden;
+
+            background: white;
+            border-radius: 10px;
+        }
+
+        .requirement-card span img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .requirement-card:hover span img {
+            transform: scale(1.08);
+        }
+
+        .requirement-card strong {
+            display: block;
+            margin-top: 5px;
+            color: #075985;
+            font-size: 18px;
+        }
+
+        .requirement-card p {
+            margin: 7px 0 0;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        ul,
+        ol {
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 9px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            text-align: left;
+            border: 1px solid #cbd5e1;
+        }
+
+        th {
+            color: white;
+            background: #075985;
+        }
+
+        tr:nth-child(even) {
+            background: #f0f9ff;
+        }
+
+        .circuit-image-card {
+            margin-top: 22px;
+            padding: 15px;
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+        }
+
+        .circuit-image-card img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .circuit-image-card h3 {
+            margin-bottom: 5px;
+        }
+
+        .working-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .working-card {
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .working-card strong {
+            display: block;
+            margin-bottom: 7px;
+            color: #075985;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding: 12px 16px;
+            color: white;
+            background: #1e293b;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .copy-button {
+            padding: 8px 14px;
+            color: white;
+            background: #0284c7;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .copy-button:hover {
+            background: #0369a1;
+        }
+
+        pre {
+            margin: 0 0 15px;
+            padding: 22px;
+            overflow-x: auto;
+
+            color: #e2e8f0;
+            background: #0f172a;
+            border-radius: 0 0 10px 10px;
+
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+
+            color: #854d0e;
+            background: #fef9c3;
+
+            border: 1px solid #fde047;
+            border-radius: 8px;
+        }
+
+        .success-note {
+            margin-top: 20px;
+            padding: 15px;
+
+            color: #166534;
+            background: #dcfce7;
+
+            border: 1px solid #86efac;
+            border-radius: 8px;
+        }
+
+        .back-button,
+        .download-button {
+            display: inline-block;
+            margin: 5px 5px 5px 0;
+            padding: 11px 20px;
+
+            color: white;
+            background: #0284c7;
+
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+
+            transition:
+                background 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .back-button:hover,
+        .download-button:hover {
+            background: #075985;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            padding: 22px;
+            text-align: center;
+            color: #cbd5e1;
+            background: #0f172a;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .requirements-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .working-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .requirement-card span {
+                height: 190px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 27px;
+            }
+
+            nav {
+                gap: 13px;
+                font-size: 14px;
+            }
+
+            .copy-button {
+                padding: 7px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <img
+                src="Simusoft logo.jpeg"
+                alt="Simusoft Technology Logo"
+            >
+        </div>
+
+        <h1>Radar Using Arduino UNO</h1>
+
+        <p>
+            Arduino UNO radar system using an HC-SR04 ultrasonic sensor,
+            servo motor, LED and buzzer for object detection.
+        </p>
+
+    </header>
+
+    <nav>
+        <a href="#details">Project Details</a>
+        <a href="#requirements">Components</a>
+        <a href="#connections">Connections</a>
+        <a href="#circuit">Circuit</a>
+        <a href="#working">Working</a>
+        <a href="#arduino-code">Arduino Code</a>
+        <a href="#processing-code">Processing Code</a>
+    </nav>
+
+    <main class="container">
+
+        <!-- Project Details -->
+
+        <section class="section" id="details">
+
+            <h2>Project Details</h2>
+
+            <div class="project-info">
+
+                <p>
+                    <strong>Project Name:</strong>
+                    Radar Using Arduino UNO
+                </p>
+
+                <p>
+                    <strong>Controller:</strong>
+                    Arduino UNO
+                </p>
+
+                <p>
+                    <strong>Sensor:</strong>
+                    HC-SR04 Ultrasonic Sensor
+                </p>
+
+                <p>
+                    <strong>Actuator:</strong>
+                    MG995 Servo Motor
+                </p>
+
+                <p>
+                    <strong>Output Devices:</strong>
+                    LED and Buzzer
+                </p>
+
+                <p>
+                    <strong>Programming Software:</strong>
+                    Arduino IDE and Processing IDE
+                </p>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    To scan an area and detect objects by measuring
+                    their distance using ultrasonic waves.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Components -->
+
+        <section class="section" id="requirements">
+
+            <h2>Required Components</h2>
+
+            <div class="requirements-grid">
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="Arduino UNO.png"
+                            alt="Arduino UNO"
+                        >
+                    </span>
+
+                    <strong>Arduino UNO</strong>
+
+                    <p>
+                        Main controller of the radar system.
+                    </p>
+                </div>
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="HC-SR04 Sensor.png"
+                            alt="HC-SR04 Ultrasonic Sensor"
+                        >
+                    </span>
+
+                    <strong>HC-SR04 Sensor</strong>
+
+                    <p>
+                        Measures the distance of nearby objects.
+                    </p>
+                </div>
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="MG995 Servo Motor.png"
+                            alt="MG995 Servo Motor"
+                        >
+                    </span>
+
+                    <strong>MG995 Servo Motor</strong>
+
+                    <p>
+                        Rotates the ultrasonic sensor for scanning.
+                    </p>
+                </div>
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="LED.png"
+                            alt="LED"
+                        >
+                    </span>
+
+                    <strong>LED</strong>
+
+                    <p>
+                        Provides a visual object-detection alert.
+                    </p>
+                </div>
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="Buzzer.png"
+                            alt="Buzzer"
+                        >
+                    </span>
+
+                    <strong>Buzzer</strong>
+
+                    <p>
+                        Provides an audible object-detection alert.
+                    </p>
+                </div>
+
+                <div class="requirement-card">
+                    <span>
+                        <img
+                            src="Jumper Wires.png"
+                            alt="Jumper Wires"
+                        >
+                    </span>
+
+                    <strong>Jumper Wires</strong>
+
+                    <p>
+                        Used to make circuit connections.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Libraries -->
+
+        <section class="section" id="libraries">
+
+            <h2>Software and Library Requirements</h2>
+
+            <h3>Arduino IDE</h3>
+
+            <p>
+                The Arduino IDE is used to upload the radar program to
+                the Arduino UNO.
+            </p>
+
+            <div class="project-info">
+                <strong>
+                    The Servo library is already included with the Arduino IDE.
+                </strong>
+            </div>
+
+            <h3>Processing IDE</h3>
+
+            <p>
+                Processing IDE receives angle and distance values from
+                Arduino through serial communication and displays the
+                graphical radar screen.
+            </p>
+
+            <div class="note">
+                The COM port selected in Processing must match the COM
+                port used by the Arduino UNO.
+            </div>
+
+        </section>
+
+        <!-- Connections -->
+
+        <section class="section" id="connections">
+
+            <h2>Circuit Connections</h2>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Component Pin</th>
+                            <th>Arduino UNO Pin</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>All Components</td>
+                            <td>GND</td>
+                            <td>GND</td>
+                            <td>Common ground</td>
+                        </tr>
+
+                        <tr>
+                            <td>All Components</td>
+                            <td>VCC</td>
+                            <td>5V</td>
+                            <td>Power supply</td>
+                        </tr>
+
+                        <tr>
+                            <td>HC-SR04</td>
+                            <td>Echo</td>
+                            <td>D11</td>
+                            <td>Receives echo pulse</td>
+                        </tr>
+
+                        <tr>
+                            <td>HC-SR04</td>
+                            <td>Trigger</td>
+                            <td>D10</td>
+                            <td>Sends ultrasonic pulse</td>
+                        </tr>
+
+                        <tr>
+                            <td>MG995 Servo</td>
+                            <td>Signal</td>
+                            <td>D9</td>
+                            <td>PWM control signal</td>
+                        </tr>
+
+                        <tr>
+                            <td>LED</td>
+                            <td>Anode positive pin</td>
+                            <td>D8</td>
+                            <td>Visual warning</td>
+                        </tr>
+
+                        <tr>
+                            <td>Buzzer</td>
+                            <td>Positive pin</td>
+                            <td>D7</td>
+                            <td>Sound warning</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="note">
+                Connect the LED using a 220Ω resistor. Ensure that all
+                components share a common ground.
+            </div>
+
+        </section>
+
+        <!-- Circuit Diagram -->
+
+        <section class="section" id="circuit">
+
+            <h2>Circuit Diagram</h2>
+
+            <p>
+                Make the connections according to the table before
+                uploading the Arduino program.
+            </p>
+
+            <div class="circuit-image-card">
+
+                <img
+                    src="Radar.png"
+                    alt="Arduino UNO radar circuit diagram"
+                >
+
+                <h3>Arduino Radar Circuit</h3>
+
+                <p>
+                    Arduino UNO connected to an HC-SR04 sensor, MG995
+                    servo motor, LED and buzzer.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Working -->
+
+        <section class="section" id="working">
+
+            <h2>Working Principle</h2>
+
+            <div class="working-grid">
+
+                <div class="working-card">
+                    <strong>1. Servo Scanning</strong>
+
+                    The servo motor rotates the HC-SR04 sensor from
+                    one side to the other.
+                </div>
+
+                <div class="working-card">
+                    <strong>2. Ultrasonic Pulse</strong>
+
+                    Arduino sends a short pulse through the Trigger pin
+                    of the ultrasonic sensor.
+                </div>
+
+                <div class="working-card">
+                    <strong>3. Distance Measurement</strong>
+
+                    The sensor receives the reflected sound wave and
+                    Arduino calculates the distance.
+                </div>
+
+                <div class="working-card">
+                    <strong>4. Object Alert</strong>
+
+                    When an object is within the selected limit, the LED
+                    and buzzer are activated.
+                </div>
+
+                <div class="working-card">
+                    <strong>5. Serial Communication</strong>
+
+                    Arduino sends the servo angle and measured distance
+                    to the computer.
+                </div>
+
+                <div class="working-card">
+                    <strong>6. Radar Display</strong>
+
+                    Processing IDE uses the received values to display
+                    the object on a radar-style screen.
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Arduino Code -->
+
+        <section class="section" id="arduino-code">
+
+            <h2>Arduino UNO Code</h2>
+
+            <div class="code-header">
+
+                <span>arduino_radar.ino</span>
+
+                <button
+                    type="button"
+                    class="copy-button"
+                    onclick="copyCode('arduinoCode', this)"
+                >
+                    Copy Code
+                </button>
+
+            </div>
+
+            <pre><code id="arduinoCode">#include &lt;Servo.h&gt;
+
+const int trigPin = 10;
+const int echoPin = 11;
+const int servoPin = 9;
+const int ledPin = 8;
+const int buzzerPin = 7;
+
+const int minimumAngle = 15;
+const int maximumAngle = 165;
+const int alertDistance = 20;
+
+Servo radarServo;
+
+long duration;
+int distance;
+
+int measureDistance() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH, 30000);
+
+  if (duration == 0) {
+    return 400;
+  }
+
+  return duration * 0.034 / 2;
+}
+
+void checkAlert(int measuredDistance) {
+  if (
+    measuredDistance &gt; 0 &amp;&amp;
+    measuredDistance &lt;= alertDistance
+  ) {
+    digitalWrite(ledPin, HIGH);
+    tone(buzzerPin, 1000);
+  } else {
+    digitalWrite(ledPin, LOW);
+    noTone(buzzerPin);
+  }
+}
+
+void sendRadarData(int angle, int measuredDistance) {
+  Serial.print(angle);
+  Serial.print(",");
+  Serial.print(measuredDistance);
+  Serial.println(".");
+}
+
+void scanForward() {
+  for (
+    int angle = minimumAngle;
+    angle &lt;= maximumAngle;
+    angle++
+  ) {
+    radarServo.write(angle);
+    delay(25);
+
+    distance = measureDistance();
+
+    checkAlert(distance);
+    sendRadarData(angle, distance);
+  }
+}
+
+void scanBackward() {
+  for (
+    int angle = maximumAngle;
+    angle &gt;= minimumAngle;
+    angle--
+  ) {
+    radarServo.write(angle);
+    delay(25);
+
+    distance = measureDistance();
+
+    checkAlert(distance);
+    sendRadarData(angle, distance);
+  }
+}
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  radarServo.attach(servoPin);
+  radarServo.write(minimumAngle);
+
+  Serial.begin(9600);
+
+  digitalWrite(ledPin, LOW);
+  noTone(buzzerPin);
+
+  delay(1000);
+}
+
+void loop() {
+  scanForward();
+  scanBackward();
+}</code></pre>
+
+            <a
+                href="arduino_radar.ino"
+                class="download-button"
+                download
+            >
+                Download Arduino Code
+            </a>
+
+            <div class="note">
+                Upload this code using Arduino IDE. Keep the baud rate
+                set to <strong>9600</strong>.
+            </div>
+
+        </section>
+
+        <!-- Processing Code -->
+
+        <section class="section" id="processing-code">
+
+            <h2>Processing IDE Code</h2>
+
+            <div class="code-header">
+
+                <span>arduino_radar_display.pde</span>
+
+                <button
+                    type="button"
+                    class="copy-button"
+                    onclick="copyCode('processingCode', this)"
+                >
+                    Copy Code
+                </button>
+
+            </div>
+
+            <pre><code id="processingCode">import processing.serial.*;
+
+Serial radarPort;
+
+String serialData = "";
+String angleText = "";
+String distanceText = "";
+
+int angle = 0;
+int distance = 0;
+
+void setup() {
+  size(1200, 700);
+  smooth();
+
+  println(Serial.list());
+
+  /*
+    Change the array number if required.
+
+    Example:
+    Serial.list()[0]
+    Serial.list()[1]
+    Serial.list()[2]
+  */
+
+  radarPort = new Serial(
+    this,
+    Serial.list()[0],
+    9600
+  );
+
+  radarPort.bufferUntil('.');
+}
+
+void draw() {
+  background(0);
+
+  drawRadar();
+  drawScanningLine();
+  drawDetectedObject();
+  drawInformation();
+}
+
+void serialEvent(Serial radarPort) {
+  serialData = radarPort.readStringUntil('.');
+
+  if (serialData == null) {
+    return;
+  }
+
+  serialData = trim(serialData);
+  serialData = serialData.substring(
+    0,
+    serialData.length() - 1
+  );
+
+  int commaPosition = serialData.indexOf(',');
+
+  if (commaPosition &lt; 0) {
+    return;
+  }
+
+  angleText = serialData.substring(
+    0,
+    commaPosition
+  );
+
+  distanceText = serialData.substring(
+    commaPosition + 1
+  );
+
+  angle = int(angleText);
+  distance = int(distanceText);
+}
+
+void drawRadar() {
+  pushMatrix();
+
+  translate(width / 2, height - 60);
+
+  stroke(0, 255, 0);
+  strokeWeight(2);
+  noFill();
+
+  arc(0, 0, 1100, 1100, PI, TWO_PI);
+  arc(0, 0, 850, 850, PI, TWO_PI);
+  arc(0, 0, 600, 600, PI, TWO_PI);
+  arc(0, 0, 350, 350, PI, TWO_PI);
+
+  line(-550, 0, 550, 0);
+
+  for (int radarAngle = 30;
+       radarAngle &lt;= 150;
+       radarAngle += 30) {
+
+    float lineX =
+      550 * cos(radians(radarAngle));
+
+    float lineY =
+      -550 * sin(radians(radarAngle));
+
+    line(0, 0, lineX, lineY);
+  }
+
+  popMatrix();
+}
+
+void drawScanningLine() {
+  pushMatrix();
+
+  translate(width / 2, height - 60);
+
+  stroke(0, 255, 0);
+  strokeWeight(4);
+
+  float scanX =
+    550 * cos(radians(angle));
+
+  float scanY =
+    -550 * sin(radians(angle));
+
+  line(0, 0, scanX, scanY);
+
+  popMatrix();
+}
+
+void drawDetectedObject() {
+  if (distance &lt;= 0 || distance &gt; 100) {
+    return;
+  }
+
+  pushMatrix();
+
+  translate(width / 2, height - 60);
+
+  stroke(255, 0, 0);
+  strokeWeight(10);
+
+  float objectRadius =
+    map(distance, 0, 100, 0, 550);
+
+  float objectX =
+    objectRadius * cos(radians(angle));
+
+  float objectY =
+    -objectRadius * sin(radians(angle));
+
+  point(objectX, objectY);
+
+  popMatrix();
+}
+
+void drawInformation() {
+  fill(0, 255, 0);
+  textSize(22);
+
+  text(
+    "Angle: " + angle + "°",
+    40,
+    45
+  );
+
+  text(
+    "Distance: " + distance + " cm",
+    40,
+    80
+  );
+
+  if (distance &gt; 0 &amp;&amp; distance &lt;= 20) {
+    fill(255, 0, 0);
+
+    text(
+      "Object Detected!",
+      40,
+      115
+    );
+  }
+}</code></pre>
+
+            <a
+                href="arduino_radar_display.pde"
+                class="download-button"
+                download
+            >
+                Download Processing Code
+            </a>
+
+            <div class="note">
+                Check the list displayed in the Processing console and
+                change <strong>Serial.list()[0]</strong> to the correct
+                Arduino COM-port position.
+            </div>
+
+        </section>
+
+        <!-- Operating Steps -->
+
+        <section class="section" id="steps">
+
+            <h2>Steps to Operate the Project</h2>
+
+            <ol>
+                <li>
+                    Make all circuit connections according to the
+                    connection table.
+                </li>
+
+                <li>
+                    Connect the Arduino UNO to the computer using a USB cable.
+                </li>
+
+                <li>
+                    Open Arduino IDE and select the correct board and COM port.
+                </li>
+
+                <li>
+                    Upload the Arduino radar code.
+                </li>
+
+                <li>
+                    Close the Arduino Serial Monitor before opening Processing.
+                </li>
+
+                <li>
+                    Open Processing IDE and paste the radar display code.
+                </li>
+
+                <li>
+                    Select the correct serial port inside the Processing code.
+                </li>
+
+                <li>
+                    Run the Processing program.
+                </li>
+
+                <li>
+                    Place an object in front of the ultrasonic sensor.
+                </li>
+
+                <li>
+                    Observe the object position on the radar screen.
+                </li>
+            </ol>
+
+            <div class="success-note">
+                When an object is detected within 20 cm, the LED turns
+                ON and the buzzer produces a warning sound.
+            </div>
+
+        </section>
+
+        <a
+            href="../index.html"
+            class="back-button"
+        >
+            ← Back to Home
+        </a>
+
+    </main>
+
+    <footer>
+        Radar Using Arduino UNO Project
+    </footer>
+
+    <script>
+        function copyCode(codeId, button) {
+            const code =
+                document.getElementById(codeId).innerText;
+
+            navigator.clipboard
+                .writeText(code)
+                .then(function () {
+                    const originalText =
+                        button.textContent;
+
+                    button.textContent = "Copied!";
+
+                    setTimeout(function () {
+                        button.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(function () {
+                    alert("Code could not be copied.");
+                });
+        }
+    </script>
+
+</body>
+
+</html>

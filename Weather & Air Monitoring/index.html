@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Weather and Air Monitoring IoT project using Arduino UNO R4 WiFi, DHT11, MQ gas sensors and Blynk IoT."
+    >
+
+    <title>
+        Weather & Air Monitoring | IoT Project
+    </title>
+
+
+    <style>
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #0369a1;
+            --accent: #0ea5e9;
+            --accent-light: #e0f2fe;
+            --surface: #ffffff;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --warning: #d97706;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: var(--text);
+            background: var(--background);
+
+            line-height: 1.65;
+        }
+
+
+        img {
+            max-width: 100%;
+        }
+
+
+        /* ==========================
+           HERO SECTION
+           ========================== */
+
+        .hero {
+            position: relative;
+
+            min-height: 520px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 80px 24px;
+
+            text-align: center;
+            color: white;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(14, 165, 233, 0.30),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a 50%,
+                    #075985
+                );
+        }
+
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+            height: 420px;
+
+            top: -150px;
+            left: -120px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(14, 165, 233, 0.10);
+
+            filter: blur(10px);
+        }
+
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+
+            max-width: 900px;
+        }
+
+
+        .project-label {
+            display: inline-block;
+
+            margin-bottom: 20px;
+            padding: 7px 15px;
+
+            color: #7dd3fc;
+            background: rgba(14, 165, 233, 0.12);
+
+            border:
+                1px solid rgba(125, 211, 252, 0.35);
+
+            border-radius: 999px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+
+        .hero h1 {
+            margin: 0;
+
+            font-size: clamp(
+                38px,
+                7vw,
+                68px
+            );
+
+            line-height: 1.08;
+
+            letter-spacing: -2px;
+        }
+
+
+        .hero-description {
+            max-width: 720px;
+
+            margin:
+                22px auto 0;
+
+            color: #cbd5e1;
+
+            font-size: 18px;
+        }
+
+
+        .hero-buttons {
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 14px;
+
+            margin-top: 32px;
+        }
+
+
+        .btn {
+            display: inline-flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 8px;
+
+            min-height: 46px;
+
+            padding:
+                11px 22px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .btn:hover {
+            transform:
+                translateY(-2px);
+        }
+
+
+        .btn-primary {
+            color: white;
+            background: var(--accent);
+        }
+
+
+        .btn-primary:hover {
+            background: #0284c7;
+        }
+
+
+        .btn-secondary {
+            color: white;
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.20);
+        }
+
+
+        .btn-secondary:hover {
+            background:
+                rgba(255, 255, 255, 0.14);
+        }
+
+
+        /* ==========================
+           BADGES
+           ========================== */
+
+        .badges {
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 30px;
+        }
+
+
+        .badge {
+            padding:
+                7px 13px;
+
+            color: #e2e8f0;
+
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.14);
+
+            border-radius: 999px;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        /* ==========================
+           NAVIGATION
+           ========================== */
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 24px;
+
+            flex-wrap: wrap;
+
+            padding: 15px 20px;
+
+            background:
+                rgba(255, 255, 255, 0.96);
+
+            backdrop-filter:
+                blur(10px);
+
+            border-bottom:
+                1px solid var(--border);
+
+            box-shadow:
+                0 4px 14px
+                rgba(15, 23, 42, 0.05);
+        }
+
+
+        nav a {
+            color: #334155;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition:
+                color 0.2s ease;
+        }
+
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+
+        /* ==========================
+           MAIN
+           ========================== */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding: 50px 0;
+        }
+
+
+        .section {
+            margin-bottom: 35px;
+
+            padding: 32px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(15, 23, 42, 0.05);
+        }
+
+
+        .section-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin:
+                0 0 24px;
+
+            color: var(--primary);
+
+            font-size: 28px;
+        }
+
+
+        .section-title::before {
+            content: "";
+
+            width: 5px;
+            height: 30px;
+
+            background: var(--accent);
+
+            border-radius: 999px;
+        }
+
+
+        .section h3 {
+            margin-top: 28px;
+
+            color: var(--secondary);
+        }
+
+
+        /* ==========================
+           OVERVIEW
+           ========================== */
+
+        .overview-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.25fr 0.75fr;
+
+            gap: 28px;
+
+            align-items: start;
+        }
+
+
+        .overview-text p {
+            color: #475569;
+
+            font-size: 16px;
+        }
+
+
+        .project-meta {
+            padding: 20px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+        }
+
+
+        .meta-item {
+            padding:
+                11px 0;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+
+        .meta-item:last-child {
+            border-bottom: none;
+        }
+
+
+        .meta-label {
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+        }
+
+
+        .meta-value {
+            color: var(--primary);
+
+            font-weight: 700;
+        }
+
+
+        /* ==========================
+           FEATURE CARDS
+           ========================== */
+
+        .feature-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 16px;
+        }
+
+
+        .feature-card {
+            padding: 20px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .feature-card:hover {
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 12px 25px
+                rgba(15, 23, 42, 0.08);
+        }
+
+
+        .feature-card strong {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: var(--secondary);
+
+            font-size: 17px;
+        }
+
+
+        .feature-card p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* ==========================
+           COMPONENTS
+           ========================== */
+
+        .requirements-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+        }
+
+
+        .requirement-card {
+            overflow: hidden;
+
+            padding: 15px;
+
+            text-align: center;
+
+            background: #f8fafc;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .requirement-card:hover {
+            transform:
+                translateY(-5px);
+
+            box-shadow:
+                0 12px 24px
+                rgba(2, 132, 199, 0.12);
+        }
+
+
+        .requirement-card span {
+            height: 160px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 10px;
+
+            margin-bottom: 12px;
+
+            background: white;
+
+            border-radius: 10px;
+        }
+
+
+        .requirement-card img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+        }
+
+
+        .requirement-card strong {
+            color: var(--primary);
+
+            font-size: 16px;
+        }
+
+
+        .requirement-card p {
+            margin-bottom: 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        /* ==========================
+           TABLE
+           ========================== */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            min-width: 620px;
+
+            border-collapse: collapse;
+
+            margin-top: 18px;
+        }
+
+
+        th,
+        td {
+            padding:
+                13px 14px;
+
+            text-align: left;
+
+            border:
+                1px solid var(--border);
+        }
+
+
+        th {
+            color: white;
+
+            background: var(--primary);
+        }
+
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+
+        /* ==========================
+           CIRCUIT
+           ========================== */
+
+        .circuit-image-card {
+            padding: 18px;
+
+            text-align: center;
+
+            background: #f8fafc;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+        }
+
+
+        .circuit-image-card img {
+            width: 100%;
+
+            max-height: 650px;
+
+            object-fit: contain;
+
+            border-radius: 10px;
+        }
+
+
+        .circuit-image-card p {
+            margin-bottom: 0;
+
+            color: var(--muted);
+        }
+
+
+        /* ==========================
+           WORKING
+           ========================== */
+
+        .sensor-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 16px;
+        }
+
+
+        .sensor-card {
+            padding: 20px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+        }
+
+
+        .sensor-card strong {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: var(--secondary);
+
+            font-size: 17px;
+        }
+
+
+        .sensor-card p {
+            margin: 0;
+
+            color: #64748b;
+        }
+
+
+        /* ==========================
+           BLYNK
+           ========================== */
+
+        .blynk-step {
+            margin-top: 18px;
+
+            padding: 20px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #bae6fd;
+
+            border-radius: 14px;
+        }
+
+
+        .blynk-step h3 {
+            margin-top: 0;
+        }
+
+
+        .blynk-summary {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 18px;
+        }
+
+
+        .blynk-summary-card {
+            padding: 18px;
+
+            text-align: center;
+
+            background: #f0f9ff;
+
+            border:
+                1px solid #bae6fd;
+
+            border-radius: 12px;
+        }
+
+
+        .blynk-summary-card strong {
+            display: block;
+
+            color: var(--secondary);
+
+            margin-bottom: 5px;
+        }
+
+
+        /* ==========================
+           CODE
+           ========================== */
+
+        .code-header {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding:
+                12px 16px;
+
+            color: white;
+
+            background: #111827;
+
+            border-radius:
+                10px 10px 0 0;
+        }
+
+
+        .copy-button {
+            padding:
+                8px 14px;
+
+            color: white;
+
+            background: var(--accent);
+
+            border: none;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+        }
+
+
+        .copy-button:hover {
+            background: #0284c7;
+        }
+
+
+        pre {
+            margin: 0 0 15px;
+
+            padding: 22px;
+
+            overflow-x: auto;
+
+            color: #e2e8f0;
+
+            background: #020617;
+
+            border-radius:
+                0 0 10px 10px;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+            line-height: 1.65;
+        }
+
+
+        /* ==========================
+           NOTES
+           ========================== */
+
+        .note,
+        .warning,
+        .success-note {
+            margin-top: 20px;
+
+            padding: 16px;
+
+            border-radius: 10px;
+        }
+
+
+        .note {
+            color: #854d0e;
+
+            background: #fefce8;
+
+            border:
+                1px solid #fde68a;
+        }
+
+
+        .warning {
+            color: #991b1b;
+
+            background: #fef2f2;
+
+            border:
+                1px solid #fecaca;
+        }
+
+
+        .success-note {
+            color: #166534;
+
+            background: #f0fdf4;
+
+            border:
+                1px solid #bbf7d0;
+        }
+
+
+        /* ==========================
+           PROJECT OUTCOME
+           ========================== */
+
+        .outcome-box {
+            padding: 28px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #075985
+                );
+
+            border-radius: 16px;
+        }
+
+
+        .outcome-box h3 {
+            margin-top: 0;
+
+            color: white;
+        }
+
+
+        .outcome-box p {
+            color: #dbeafe;
+        }
+
+
+        /* ==========================
+           FOOTER
+           ========================== */
+
+        footer {
+            padding:
+                35px 20px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            background: #020617;
+        }
+
+
+        footer strong {
+            color: white;
+        }
+
+
+        footer a {
+            color: #38bdf8;
+
+            text-decoration: none;
+        }
+
+
+        /* ==========================
+           RESPONSIVE
+           ========================== */
+
+        @media (
+            max-width: 900px
+        ) {
+
+            .requirements-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .feature-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .overview-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        @media (
+            max-width: 650px
+        ) {
+
+            .section {
+                padding: 22px;
+            }
+
+
+            .requirements-grid,
+            .feature-grid,
+            .sensor-grid,
+            .blynk-summary {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            nav {
+                gap: 12px;
+
+                font-size: 13px;
+            }
+
+
+            .hero {
+                min-height: 460px;
+
+                padding:
+                    65px 20px;
+            }
+
+
+            .hero h1 {
+                letter-spacing: -1px;
+            }
+
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================
+     HERO
+     ========================== -->
+
+<header class="hero">
+
+    <div class="hero-content">
+
+        <span class="project-label">
+            IoT • Embedded Systems • Environmental Monitoring
+        </span>
+
+
+        <h1>
+            Weather & Air Monitoring System
+        </h1>
+
+
+        <p class="hero-description">
+
+            An IoT-enabled environmental monitoring system
+            built using the Arduino UNO R4 WiFi,
+            DHT11 and MQ-series gas sensors.
+
+            Sensor data is processed in real time
+            and transmitted to Blynk IoT
+            for remote monitoring.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <!-- Replace # with your repository link -->
+
+            <a
+                class="btn btn-primary"
+                href="#code"
+            >
+                View Source Code
+            </a>
+
+
+            <a
+                class="btn btn-secondary"
+                href="#circuit"
+            >
+                View Circuit
+            </a>
+
+
+            <a
+                class="btn btn-secondary"
+                href="#blynksetup"
+            >
+                Blynk Setup
+            </a>
+
+        </div>
+
+
+        <div class="badges">
+
+            <span class="badge">
+                Arduino UNO R4 WiFi
+            </span>
+
+            <span class="badge">
+                Blynk IoT
+            </span>
+
+            <span class="badge">
+                DHT11
+            </span>
+
+            <span class="badge">
+                MQ135
+            </span>
+
+            <span class="badge">
+                MQ2
+            </span>
+
+            <span class="badge">
+                MQ9
+            </span>
+
+            <span class="badge">
+                C/C++
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==========================
+     NAVIGATION
+     ========================== -->
+
+<nav>
+
+    <a href="#about">
+        About
+    </a>
+
+    <a href="#features">
+        Features
+    </a>
+
+    <a href="#components">
+        Hardware
+    </a>
+
+    <a href="#connections">
+        Connections
+    </a>
+
+    <a href="#circuit">
+        Circuit
+    </a>
+
+    <a href="#working">
+        Working
+    </a>
+
+    <a href="#blynksetup">
+        Blynk
+    </a>
+
+    <a href="#code">
+        Code
+    </a>
+
+</nav>
+
+
+
+<main class="container">
+
+
+<!-- ==========================
+     ABOUT
+     ========================== -->
+
+<section
+    class="section"
+    id="about"
+>
+
+    <h2 class="section-title">
+        About the Project
+    </h2>
+
+
+    <div class="overview-grid">
+
+
+        <div class="overview-text">
+
+            <p>
+
+                This project demonstrates an
+                IoT-based Weather & Air Monitoring System
+                designed to collect environmental data
+                using multiple sensors.
+
+            </p>
+
+
+            <p>
+
+                The Arduino UNO R4 WiFi acts as
+                the main embedded controller.
+
+                A DHT11 sensor measures
+                temperature and humidity,
+                while MQ135, MQ2 and MQ9 sensors
+                provide analog readings for
+                air-quality and gas monitoring.
+
+            </p>
+
+
+            <p>
+
+                The collected readings are processed
+                by the Arduino and transmitted over Wi-Fi
+                to the Blynk IoT platform.
+
+                This allows the sensor values
+                to be viewed remotely from
+                a dashboard.
+
+            </p>
+
+
+            <p>
+
+                The project combines embedded programming,
+                sensor interfacing,
+                wireless communication
+                and IoT dashboard integration
+                in a single practical system.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="project-meta">
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    Platform
+                </span>
+
+                <span class="meta-value">
+                    Arduino UNO R4 WiFi
+                </span>
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    IoT Platform
+                </span>
+
+                <span class="meta-value">
+                    Blynk IoT
+                </span>
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    Programming
+                </span>
+
+                <span class="meta-value">
+                    Arduino C/C++
+                </span>
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    Communication
+                </span>
+
+                <span class="meta-value">
+                    Wi-Fi
+                </span>
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    Update Interval
+                </span>
+
+                <span class="meta-value">
+                    2 Seconds
+                </span>
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="meta-label">
+                    Project Type
+                </span>
+
+                <span class="meta-value">
+                    IoT / Embedded Systems
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     FEATURES
+     ========================== -->
+
+<section
+    class="section"
+    id="features"
+>
+
+    <h2 class="section-title">
+        Key Features
+    </h2>
+
+
+    <div class="feature-grid">
+
+
+        <div class="feature-card">
+
+            <strong>
+                Real-Time Monitoring
+            </strong>
+
+            <p>
+                Continuously reads environmental
+                sensor values.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Wi-Fi Connectivity
+            </strong>
+
+            <p>
+                Uses the built-in Wi-Fi
+                capability of Arduino UNO R4 WiFi.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Blynk Dashboard
+            </strong>
+
+            <p>
+                Displays sensor readings remotely
+                using Blynk IoT.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Temperature & Humidity
+            </strong>
+
+            <p>
+                DHT11 monitors temperature
+                and relative humidity.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Multi-Gas Monitoring
+            </strong>
+
+            <p>
+                MQ135, MQ2 and MQ9
+                provide multiple gas-related
+                analog readings.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Modular Design
+            </strong>
+
+            <p>
+                Individual sensors can be
+                replaced or extended easily.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     HARDWARE
+     ========================== -->
+
+<section
+    class="section"
+    id="components"
+>
+
+    <h2 class="section-title">
+        Hardware Components
+    </h2>
+
+
+    <div class="requirements-grid">
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="Arduino r4.png"
+                    alt="Arduino UNO R4 WiFi"
+                >
+
+            </span>
+
+            <strong>
+                Arduino UNO R4 WiFi
+            </strong>
+
+            <p>
+                Main embedded controller.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="Breadborad.png"
+                    alt="Breadboard"
+                >
+
+            </span>
+
+            <strong>
+                Breadboard
+            </strong>
+
+            <p>
+                Used for prototyping connections.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="DHT11.png"
+                    alt="DHT11 Sensor"
+                >
+
+            </span>
+
+            <strong>
+                DHT11 Sensor
+            </strong>
+
+            <p>
+                Temperature and humidity sensor.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="MQ135 sensor.png"
+                    alt="MQ135 Sensor"
+                >
+
+            </span>
+
+            <strong>
+                MQ135
+            </strong>
+
+            <p>
+                Air-quality monitoring sensor.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="MQ2 sensor.png"
+                    alt="MQ2 Sensor"
+                >
+
+            </span>
+
+            <strong>
+                MQ2
+            </strong>
+
+            <p>
+                Gas sensing module.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="MQ9 sensor.png"
+                    alt="MQ9 Sensor"
+                >
+
+            </span>
+
+            <strong>
+                MQ9
+            </strong>
+
+            <p>
+                Carbon monoxide related
+                gas sensing module.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="Jumper Wires.png"
+                    alt="Jumper Wires"
+                >
+
+            </span>
+
+            <strong>
+                Jumper Wires
+            </strong>
+
+            <p>
+                Electrical interconnections.
+            </p>
+
+        </div>
+
+
+
+        <div class="requirement-card">
+
+            <span>
+
+                <img
+                    src="5V Power supply.png"
+                    alt="5V Power Supply"
+                >
+
+            </span>
+
+            <strong>
+                5V Power Supply
+            </strong>
+
+            <p>
+                Powers the development board.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     CONNECTIONS
+     ========================== -->
+
+<section
+    class="section"
+    id="connections"
+>
+
+    <h2 class="section-title">
+        Hardware Connections
+    </h2>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Component
+                    </th>
+
+                    <th>
+                        Pin
+                    </th>
+
+                    <th>
+                        Arduino Connection
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                <tr>
+                    <td>DHT11</td>
+                    <td>VCC</td>
+                    <td>5V</td>
+                </tr>
+
+
+                <tr>
+                    <td>DHT11</td>
+                    <td>GND</td>
+                    <td>GND</td>
+                </tr>
+
+
+                <tr>
+                    <td>DHT11</td>
+                    <td>DATA</td>
+                    <td>D4</td>
+                </tr>
+
+
+                <tr>
+                    <td>MQ Sensors</td>
+                    <td>VCC</td>
+                    <td>5V</td>
+                </tr>
+
+
+                <tr>
+                    <td>MQ Sensors</td>
+                    <td>GND</td>
+                    <td>GND</td>
+                </tr>
+
+
+                <tr>
+                    <td>MQ135</td>
+                    <td>AO</td>
+                    <td>A0</td>
+                </tr>
+
+
+                <tr>
+                    <td>MQ2</td>
+                    <td>AO</td>
+                    <td>A2</td>
+                </tr>
+
+
+                <tr>
+                    <td>MQ9</td>
+                    <td>AO</td>
+                    <td>A3</td>
+                </tr>
+
+
+                <tr>
+                    <td>Arduino UNO R4</td>
+                    <td>Wi-Fi</td>
+                    <td>Built-in</td>
+                </tr>
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     CIRCUIT
+     ========================== -->
+
+<section
+    class="section"
+    id="circuit"
+>
+
+    <h2 class="section-title">
+        Circuit Diagram
+    </h2>
+
+
+    <div class="circuit-image-card">
+
+        <img
+            src="Weather Air Monitoring.png"
+            alt="Weather and Air Monitoring circuit diagram"
+        >
+
+
+        <h3>
+            System Wiring
+        </h3>
+
+
+        <p>
+
+            Arduino UNO R4 WiFi
+            connected to DHT11,
+            MQ135,
+            MQ2
+            and MQ9 sensors.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     WORKING
+     ========================== -->
+
+<section
+    class="section"
+    id="working"
+>
+
+    <h2 class="section-title">
+        How It Works
+    </h2>
+
+
+    <div class="sensor-grid">
+
+
+        <div class="sensor-card">
+
+            <strong>
+                1. Sensor Acquisition
+            </strong>
+
+            <p>
+
+                Arduino reads temperature,
+                humidity and analog MQ sensor values.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="sensor-card">
+
+            <strong>
+                2. Data Processing
+            </strong>
+
+            <p>
+
+                Raw analog values are mapped
+                into a 0–100 monitoring range.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="sensor-card">
+
+            <strong>
+                3. Wi-Fi Connection
+            </strong>
+
+            <p>
+
+                Arduino UNO R4 WiFi connects
+                to the configured wireless network.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="sensor-card">
+
+            <strong>
+                4. Cloud Upload
+            </strong>
+
+            <p>
+
+                Processed readings are sent
+                to Blynk virtual pins.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="sensor-card">
+
+            <strong>
+                5. Dashboard Display
+            </strong>
+
+            <p>
+
+                Blynk displays the values
+                using individual gauge widgets.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="sensor-card">
+
+            <strong>
+                6. Continuous Update
+            </strong>
+
+            <p>
+
+                The process repeats automatically
+                every two seconds.
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     SOFTWARE
+     ========================== -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        Software & Libraries
+    </h2>
+
+
+    <div class="feature-grid">
+
+
+        <div class="feature-card">
+
+            <strong>
+                Arduino IDE
+            </strong>
+
+            <p>
+                Used to develop and upload
+                the embedded firmware.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Blynk IoT
+            </strong>
+
+            <p>
+                Cloud platform used for
+                remote sensor monitoring.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                WiFiS3
+            </strong>
+
+            <p>
+                Provides Wi-Fi communication
+                for Arduino UNO R4 WiFi.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                DHT Sensor Library
+            </strong>
+
+            <p>
+                Used to communicate
+                with the DHT11.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Adafruit Unified Sensor
+            </strong>
+
+            <p>
+                Required dependency for
+                sensor integration.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <strong>
+                Blynk Library
+            </strong>
+
+            <p>
+                Connects Arduino firmware
+                with Blynk IoT.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     BLYNK
+     ========================== -->
+
+<section
+    class="section"
+    id="blynksetup"
+>
+
+    <h2 class="section-title">
+        Blynk IoT Configuration
+    </h2>
+
+
+    <div class="blynk-step">
+
+        <h3>
+            1. Create Template
+        </h3>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Setting</th>
+                        <th>Value</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+                        <td>Template Name</td>
+                        <td>
+                            Weather & Air Monitoring
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Hardware</td>
+                        <td>
+                            Arduino UNO R4 WiFi
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Connection Type</td>
+                        <td>
+                            WiFi
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="blynk-step">
+
+        <h3>
+            2. Create Datastreams
+        </h3>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Virtual Pin</th>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Range</th>
+                        <th>Unit</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+                        <td>V0</td>
+                        <td>Temperature</td>
+                        <td>Double</td>
+                        <td>0–100</td>
+                        <td>°C</td>
+                    </tr>
+
+                    <tr>
+                        <td>V1</td>
+                        <td>Humidity</td>
+                        <td>Double</td>
+                        <td>0–100</td>
+                        <td>%</td>
+                    </tr>
+
+                    <tr>
+                        <td>V2</td>
+                        <td>MQ135</td>
+                        <td>Double</td>
+                        <td>0–100</td>
+                        <td>%</td>
+                    </tr>
+
+                    <tr>
+                        <td>V3</td>
+                        <td>MQ2</td>
+                        <td>Double</td>
+                        <td>0–100</td>
+                        <td>%</td>
+                    </tr>
+
+                    <tr>
+                        <td>V4</td>
+                        <td>MQ9</td>
+                        <td>Double</td>
+                        <td>0–100</td>
+                        <td>%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="blynk-step">
+
+        <h3>
+            3. Configure Dashboard
+        </h3>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Widget</th>
+                        <th>Datastream</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+                        <td>Temperature Gauge</td>
+                        <td>V0</td>
+                    </tr>
+
+                    <tr>
+                        <td>Humidity Gauge</td>
+                        <td>V1</td>
+                    </tr>
+
+                    <tr>
+                        <td>MQ135 Air Quality</td>
+                        <td>V2</td>
+                    </tr>
+
+                    <tr>
+                        <td>MQ2 Gas Sensor</td>
+                        <td>V3</td>
+                    </tr>
+
+                    <tr>
+                        <td>MQ9 Gas Sensor</td>
+                        <td>V4</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="blynk-step">
+
+        <h3>
+            4. Configure Credentials
+        </h3>
+
+
+        <div class="code-header">
+
+            <span>
+                Blynk Configuration
+            </span>
+
+
+            <button
+                type="button"
+                class="copy-button"
+                onclick="
+                    copyCode(
+                        'blynkCredentials',
+                        this
+                    )
+                "
+            >
+                Copy
+            </button>
+
+        </div>
+
+
+        <pre><code id="blynkCredentials">#define BLYNK_TEMPLATE_ID "YOUR_TEMPLATE_ID"
+#define BLYNK_TEMPLATE_NAME "Weather &amp; Air Monitoring"
+#define BLYNK_AUTH_TOKEN "YOUR_BLYNK_AUTH_TOKEN"
+
+char ssid[] = "YOUR_WIFI_NAME";
+char pass[] = "YOUR_WIFI_PASSWORD";</code></pre>
+
+
+        <div class="warning">
+
+            Never upload your real
+            Wi-Fi password or Blynk Auth Token
+            to a public GitHub repository.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     CODE
+     ========================== -->
+
+<section
+    class="section"
+    id="code"
+>
+
+    <h2 class="section-title">
+        Arduino Firmware
+    </h2>
+
+
+    <div class="code-header">
+
+        <span>
+            weather_air_monitoring.ino
+        </span>
+
+
+        <button
+            type="button"
+            class="copy-button"
+            onclick="
+                copyCode(
+                    'arduinoCode',
+                    this
+                )
+            "
+        >
+            Copy Code
+        </button>
+
+    </div>
+
+
+    <pre><code id="arduinoCode">#define BLYNK_PRINT Serial
+
+#define BLYNK_TEMPLATE_ID "YOUR_TEMPLATE_ID"
+#define BLYNK_TEMPLATE_NAME "Weather &amp; Air Monitoring"
+#define BLYNK_AUTH_TOKEN "YOUR_BLYNK_AUTH_TOKEN"
+
+#include &lt;SPI.h&gt;
+#include &lt;WiFiS3.h&gt;
+#include &lt;BlynkSimpleWifi.h&gt;
+#include &lt;DHT.h&gt;
+
+char ssid[] = "YOUR_WIFI_NAME";
+char pass[] = "YOUR_WIFI_PASSWORD";
+
+#define DHTPIN 4
+#define DHTTYPE DHT11
+
+DHT dht(
+    DHTPIN,
+    DHTTYPE
+);
+
+/*
+    Sensor Connections
+
+    MQ135 -> A0
+    MQ2   -> A2
+    MQ9   -> A3
+*/
+
+const int mq135 = A0;
+const int mq2   = A2;
+const int mq9   = A3;
+
+BlynkTimer timer;
+
+
+void sendSensorData()
+{
+
+    float mq135Value =
+        analogRead(mq135);
+
+    float mq2Value =
+        analogRead(mq2);
+
+    float mq9Value =
+        analogRead(mq9);
+
+
+    mq135Value = map(
+        mq135Value,
+        0,
+        1023,
+        0,
+        100
+    );
+
+
+    mq2Value = map(
+        mq2Value,
+        0,
+        1023,
+        0,
+        100
+    );
+
+
+    mq9Value = map(
+        mq9Value,
+        0,
+        1023,
+        0,
+        100
+    );
+
+
+    float temperature =
+        dht.readTemperature();
+
+
+    float humidity =
+        dht.readHumidity();
+
+
+    if (
+        isnan(temperature) ||
+        isnan(humidity)
+    )
+    {
+
+        Serial.println(
+            "DHT read failed"
+        );
+
+        return;
+
+    }
+
+
+    Blynk.virtualWrite(
+        V0,
+        temperature
+    );
+
+
+    Blynk.virtualWrite(
+        V1,
+        humidity
+    );
+
+
+    Blynk.virtualWrite(
+        V2,
+        mq135Value
+    );
+
+
+    Blynk.virtualWrite(
+        V3,
+        mq2Value
+    );
+
+
+    Blynk.virtualWrite(
+        V4,
+        mq9Value
+    );
+
+
+    Serial.print("Temperature: ");
+    Serial.print(temperature);
+
+    Serial.print(" C | Humidity: ");
+    Serial.print(humidity);
+
+    Serial.print(" % | MQ135: ");
+    Serial.print(mq135Value);
+
+    Serial.print(" | MQ2: ");
+    Serial.print(mq2Value);
+
+    Serial.print(" | MQ9: ");
+    Serial.println(mq9Value);
+
+}
+
+
+void setup()
+{
+
+    Serial.begin(9600);
+
+
+    pinMode(
+        mq135,
+        INPUT
+    );
+
+
+    pinMode(
+        mq2,
+        INPUT
+    );
+
+
+    pinMode(
+        mq9,
+        INPUT
+    );
+
+
+    dht.begin();
+
+
+    Blynk.begin(
+        BLYNK_AUTH_TOKEN,
+        ssid,
+        pass
+    );
+
+
+    timer.setInterval(
+        2000L,
+        sendSensorData
+    );
+
+}
+
+
+void loop()
+{
+
+    Blynk.run();
+
+    timer.run();
+
+}</code></pre>
+
+
+    <div class="note">
+
+        Replace all placeholder
+        Blynk and Wi-Fi values
+        before uploading the firmware.
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     PROJECT OUTCOME
+     ========================== -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        Project Outcome
+    </h2>
+
+
+    <div class="outcome-box">
+
+        <h3>
+            Completed IoT Environmental Monitoring Prototype
+        </h3>
+
+
+        <p>
+
+            The project demonstrates
+            sensor interfacing,
+            embedded programming,
+            analog data acquisition,
+            Wi-Fi communication,
+            cloud-based IoT integration
+            and real-time dashboard visualization.
+
+        </p>
+
+
+        <p>
+
+            It provides a practical foundation
+            for extending the system with
+            data logging,
+            alerts,
+            threshold-based automation,
+            additional environmental sensors
+            or integration with larger
+            industrial monitoring systems.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================
+     REPOSITORY STRUCTURE
+     ========================== -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        Suggested Repository Structure
+    </h2>
+
+
+    <div class="code-header">
+
+        <span>
+            Repository
+        </span>
+
+    </div>
+
+
+    <pre><code>Weather-Air-Monitoring/
+│
+├── index.html
+├── README.md
+├── LICENSE
+│
+├── firmware/
+│   └── weather_air_monitoring.ino
+│
+├── images/
+│   ├── circuit-diagram.png
+│   ├── arduino-r4.png
+│   ├── dht11.png
+│   ├── mq135.png
+│   ├── mq2.png
+│   ├── mq9.png
+│   ├── breadboard.png
+│   └── jumper-wires.png
+│
+└── docs/
+    └── project-documentation.pdf</code></pre>
+
+</section>
+
+
+</main>
+
+
+
+<!-- ==========================
+     FOOTER
+     ========================== -->
+
+<footer>
+
+    <p>
+
+        <strong>
+            Weather & Air Monitoring System
+        </strong>
+
+        <br>
+
+        Personal IoT & Embedded Systems Project
+
+    </p>
+
+
+    <p>
+
+        Built with Arduino UNO R4 WiFi,
+        Blynk IoT and environmental sensors.
+
+    </p>
+
+</footer>
+
+
+
+<script>
+
+    function copyCode(
+        codeId,
+        button
+    )
+    {
+
+        const code =
+            document
+            .getElementById(
+                codeId
+            )
+            .innerText;
+
+
+        navigator.clipboard
+            .writeText(code)
+
+            .then(function ()
+            {
+
+                const originalText =
+                    button.textContent;
+
+
+                button.textContent =
+                    "Copied!";
+
+
+                setTimeout(
+                    function ()
+                    {
+
+                        button.textContent =
+                            originalText;
+
+                    },
+                    1800
+                );
+
+            })
+
+
+            .catch(function ()
+            {
+
+                alert(
+                    "Code could not be copied."
+                );
+
+            });
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
